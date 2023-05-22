@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/test_kuiper_course.dir/test_first.cpp.o CMakeFiles/test_kuiper_course.dir/test_main.cpp.o -o test_kuiper_course  -lglog -lgtest -lpthread -larmadillo -lblas -llapack 

@@ -1,1 +1,1 @@
-# Kuiper
+# KuiperCourse
