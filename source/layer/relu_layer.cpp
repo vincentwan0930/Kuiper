@@ -19,7 +19,7 @@ ReluLayer::ReluLayer(const std::shared_ptr<Operator> &op) : Layer("Relu") {
 
   CHECK(relu_op != nullptr) << "Relu operator is empty";
   // 一个op实例和一个layer 一一对应 这里relu op对一个relu layer
-  // 对应关系
+  // 注意：这里用make_unique<>重新创建了一个relu_op（即参数op）所指对象的副本
   this->op_ = std::make_unique<ReluOperator>(relu_op->get_thresh());
 }
 
@@ -38,7 +38,15 @@ void ReluLayer::Forwards(const std::vector<std::shared_ptr<Tensor<float>>> &inpu
     CHECK(!inputs.at(i)->empty());
     const std::shared_ptr<Tensor<float>> &input_data = inputs.at(i); //取出批次当中的一个张量
 
-    //对张量中的每一个元素进行运算，进行relu运算
+    //这里的transform是arma库的fcube类的成员函数，用于对张量fcube中的每一个元素进行transform函数的参数定义的运算
+    //注意：这个transform函数的参数是一个函数对象，并且是lambda表达式形式的函数对象
+    //lambda表达式的语法为：[捕获列表](函数参数){函数体}
+    // [&]：以引用的方式捕获所有外部变量。
+    // [=]：以值的方式捕获所有外部变量。
+    // [x, &y]：以值的方式捕获变量x，以引用的方式捕获变量y。
+    // [&a, &b, &c]：以引用的方式捕获变量a、b、c
+    //这里的lambda表达式捕获所有外部变量的引用，从而捕获reluop的指针op_来获取计算所需的阈值thresh。
+    //并且接收float为参数，返回relu计算后的float。即：将调用transform的fcube对象的每一个float体素进行relu计算
     input_data->data().transform([&](float value) {
       // 对张良中的没一个元素进行运算
       // 从operator中得到存储的属性

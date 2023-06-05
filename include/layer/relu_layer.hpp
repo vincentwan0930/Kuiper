@@ -12,7 +12,7 @@ class ReluLayer : public Layer {
  public:
   ~ReluLayer() override = default;
 
-  // 通过这里，把relu_op中的thresh告知给relu layer, 因为计算的时候要用到
+  // 通过这里，把relu_op中的thresh参数告知给relu layer, 因为计算的时候要用到
   explicit ReluLayer(const std::shared_ptr<Operator> &op);
 
   // 执行relu 操作的具体函数Forwards
@@ -23,6 +23,7 @@ class ReluLayer : public Layer {
   static std::shared_ptr<Layer> CreateInstance(const std::shared_ptr<Operator> &op);
 
  private:
+  // relu_layer拥有一个relu_op成员指针，这样才能在计算时获取relu的阈值参赛thresh
   std::unique_ptr<ReluOperator> op_;
 };
 }
